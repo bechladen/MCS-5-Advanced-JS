@@ -3,12 +3,13 @@ import { createTaskItem } from '../templates/taskListTemplate';
 import * as apiService from '../services/api';
 import Notiflix from 'notiflix';
 
-function handleFormSubmit(event) {
+function handleFormSubmit(event: Event): void {
   event.preventDefault();
 
-  const form = event.target;
+  const form = event.target as HTMLFormElement;
 
-  const taskValue = form.elements.task.value.trim();
+  const inputElement = form.elements.namedItem('task') as HTMLInputElement;
+  const taskValue = inputElement.value.trim();
 
   apiService
     .postNewTask({
@@ -16,7 +17,7 @@ function handleFormSubmit(event) {
       isDone: false,
     })
     .then(createdTask => {
-      refs.list.insertAdjacentHTML('beforeend', createTaskItem(createdTask));
+      refs.list?.insertAdjacentHTML('beforeend', createTaskItem(createdTask));
     })
     .catch(err => {
       console.error(err);
@@ -25,10 +26,21 @@ function handleFormSubmit(event) {
     .finally(() => form.reset());
 }
 
-function handleTaskClick(event) {
-  if (event.target.tagName === 'SPAN' || event.target.tagName === 'LI') {
-    const liEl = event.target.closest('li');
-    const liId = Number(liEl.dataset.id);
+function handleTaskClick(event: PointerEvent): void {
+  const target = event.target as HTMLElement;
+
+  if (target.tagName === 'SPAN' || target.tagName === 'LI') {
+    const liEl = target.closest('li');
+
+    if (liEl === null) {
+      return;
+    }
+
+    const liId = liEl.dataset.id;
+
+    if (!liId) {
+      return;
+    }
 
     apiService
       .updateTask(liId, { isDone: !liEl.classList.contains('line-through') })
@@ -37,14 +49,22 @@ function handleTaskClick(event) {
         console.error(err);
         Notiflix.Notify.failure(err.message);
       });
-  } else if (event.target.tagName === 'BUTTON') {
-    const liEl = event.target.closest('li');
-    const liId = Number(liEl.dataset.id);
+  } else if (target.tagName === 'BUTTON') {
+    const liEl = target.closest('li');
+
+    if (liEl === null) {
+      return;
+    }
+
+    const liId = liEl.dataset.id;
+
+    if (!liId) {
+      return;
+    }
 
     apiService
       .deleteTask(liId)
       .then(() => liEl.remove())
-      // .then(_ => liEl.remove())
       .catch(err => {
         console.error(err);
         Notiflix.Notify.failure(err.message);

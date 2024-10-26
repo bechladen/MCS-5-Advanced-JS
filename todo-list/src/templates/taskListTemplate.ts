@@ -1,17 +1,18 @@
 import { refs } from '../utils/consts';
 import * as apiService from '../services/api';
 import Notiflix from 'notiflix';
+import { Task } from '../types';
 
-function createTaskItem(task) {
+function createTaskItem(task: Task): string {
   return `<li data-id="${task.id}" class="${task.isDone ? 'line-through' : ''}"><div><span>${
     task.text
   }</span><button>Delete</button></div></li>`;
 }
 
-function fillTasksListFromDB() {
+function fillTasksListFromDB(): void {
   apiService
     .getTasks()
-    .then(tasks => {
+    .then((tasks: Task[]) => {
       const tasksAmount = tasks.length;
 
       Notiflix.Notify.info(`You have ${tasksAmount} task${tasksAmount > 1 ? 's' : ''}.`);
@@ -25,13 +26,15 @@ function fillTasksListFromDB() {
       const tasksMarkup = tasks.map(createTaskItem).join('');
 
       // insert markup to HTML tasks list
-      refs.list.innerHTML = tasksMarkup;
+      if (refs.list) {
+        refs.list.innerHTML = tasksMarkup;
+      }
     })
     .catch(err => {
       console.error(err);
       Notiflix.Notify.failure(err.message);
     })
-    .finally(() => refs.loader.classList.add('hidden'));
+    .finally(() => refs.loader?.classList.add('hidden'));
 }
 
 export { createTaskItem, fillTasksListFromDB };

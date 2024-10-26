@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "watch": "tsc -w",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -12,6 +13,7 @@
     "vite": "^5.4.1"
   },
   "dependencies": {
+    "axios": "^1.7.7",
     "notiflix": "^3.2.7"
   }
 }
