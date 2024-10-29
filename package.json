@@ -1,0 +1,16 @@
+{
+  "name": "mcs-5-advanced-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "web-dev-server --node-resolve --open --watch",
+    "watch": "tsc --watch"
+  },
+  "keywords": [],
+  "author": "Alexey Simak <aleksim.dev@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@web/dev-server": "^0.4.6"
+  }
+}
